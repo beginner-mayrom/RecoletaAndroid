@@ -8,31 +8,30 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textViewEmail3"
+        android:id="@+id/textViewEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="328dp"
-        android:text="Login"
+        android:text="E-mail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.173"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/textInputEditEndereco"
+        android:id="@+id/textInputEmail"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
-        android:layout_marginBottom="50dp"
         android:hint="E-mail"
         android:shadowColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/textViewSenha"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEmail3" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewEmail" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -51,17 +50,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="347dp"
         android:text="Senha"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
+        app:layout_constraintBottom_toTopOf="@+id/editTextSenha"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputEditEndereco"
+        app:layout_constraintTop_toBottomOf="@+id/textInputEmail"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/buttonCadastrar"
+        android:id="@+id/buttonEntrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
@@ -74,7 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editTextSenha"
         app:rippleColor="#4CAF50"
         app:toggleCheckedStateOnClick="true" />
 
@@ -91,7 +90,7 @@
         app:iconTint="#4CAF50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCadastrar"
+        app:layout_constraintTop_toBottomOf="@+id/buttonEntrar"
         app:rippleColor="#4BD609"
         app:toggleCheckedStateOnClick="true" />
 
@@ -111,7 +110,7 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonCadastro" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/editTextSenha"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginStart="25dp"
