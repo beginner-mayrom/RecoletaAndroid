@@ -49,6 +49,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        inputEmail = (TextInputEditText) findViewById(R.id.textInputEmail);
+        inputPasswd = (EditText) findViewById(R.id.editTextSenha);
+        client = new AsyncHttpClient();
+        login = (Button) findViewById(R.id.buttonEntrar);
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(inputEmail.getText().toString().isEmpty() || inputPasswd.getText().toString().isEmpty()){
+                    Toast.makeText(MainActivity.this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    User user = new User();
+                    user.setEmail(inputEmail.getText().toString());
+                    user.setPassword(inputPasswd.getText().toString());
+                    login(user);
+                }
+            }
+        });
     }
 
     public void login(User user){
