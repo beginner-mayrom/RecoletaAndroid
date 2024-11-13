@@ -19,6 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,14 +84,27 @@ public class MainActivity extends AppCompatActivity {
                 if(response.code() == 200){
                     String responseData = response.body().string();
                     try{
-                        // Extrair o token JWT do JSON da resposta
+                        // Extrair os dados do JSON da resposta
                         JSONObject jsonResponse = new JSONObject(responseData);
                         String token = jsonResponse.getString("accessToken");
+                        String id = jsonResponse.getString("_id");
+                        String firstName = jsonResponse.getString("firstName");
+                        String lastName = jsonResponse.getString("lastName");
+                        Boolean admin = jsonResponse.getBoolean("isAdmin");
 
-                        // Salvar o token em SharedPreferences
+                        // Verifica se o campo "userType" está presente
+                        String userType = jsonResponse.has("userType") ?
+                                jsonResponse.getString("userType") : "null";
+
+                        // Salvar os dados em SharedPreferences
                         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("jwt_token", token);
+                        editor.putString("user_id", id);
+                        editor.putString("firstName", firstName);
+                        editor.putString("lastName", lastName);
+                        editor.putBoolean("is_admin", admin);
+                        editor.putString("user_type", userType);
                         editor.apply();
 
                         Log.d("Login", "Token salvo: " + token);
@@ -98,8 +113,15 @@ public class MainActivity extends AppCompatActivity {
                                 "Login Realizado com Sucesso!", Toast.LENGTH_SHORT).show());
 
 
-                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                        startActivity(intent);
+                        if(admin){
+                            // TODO: 12/11/2024 alterar o redirecionamento para a página do admin
+                            Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                        }
 
                     }catch (JSONException e){
                         e.printStackTrace();
@@ -113,11 +135,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    // Função para recuperar o token JWT armazenado
-    public String getToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        return sharedPreferences.getString("jwt_token", null);
     }
 }
