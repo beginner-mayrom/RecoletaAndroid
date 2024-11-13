@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, MainRegister.class);
+                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
@@ -96,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
 
                         runOnUiThread(() -> Toast.makeText(MainActivity.this,
                                 "Login Realizado com Sucesso!", Toast.LENGTH_SHORT).show());
+
+
+                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                        startActivity(intent);
 
                     }catch (JSONException e){
                         e.printStackTrace();
