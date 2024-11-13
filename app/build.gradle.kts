@@ -33,6 +33,8 @@ android {
 
 dependencies {
 
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.loopj.android:android-async-http:1.4.9")
     implementation(libs.appcompat)
     implementation(libs.material)

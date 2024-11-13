@@ -1,38 +1,34 @@
 package com.example.recoleta;
 
+import okhttp3.*;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.recoleta.models.User;
 import com.google.android.material.textfield.TextInputEditText;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.jar.JarException;
-
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.ContentType;
-import cz.msebera.android.httpclient.entity.StringEntity;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
     TextInputEditText inputEmail;
     EditText inputPasswd;
-    Button login;
-    AsyncHttpClient client;
+    Button loginButton;
+
+    private static final String url = "https://recoletaapi.onrender.com/api/auth/login";
+
+    private OkHttpClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,51 +47,73 @@ public class MainActivity extends AppCompatActivity {
 
         inputEmail = (TextInputEditText) findViewById(R.id.textInputEmail);
         inputPasswd = (EditText) findViewById(R.id.editTextSenha);
-        client = new AsyncHttpClient();
-        login = (Button) findViewById(R.id.buttonEntrar);
+        loginButton = (Button) findViewById(R.id.buttonEntrar);
 
-        login.setOnClickListener(new View.OnClickListener() {
+        client = new OkHttpClient();
+
+        loginButton.setOnClickListener(view -> {
+            String email = inputEmail.getText().toString();
+            String password = inputPasswd.getText().toString();
+            login(email, password);
+        });
+    }
+
+    private void login(String email, String password) {
+
+        String json = "{ \"email\": \"" + email + "\", \"password\": \"" + password + "\" }";
+        RequestBody body = RequestBody.create(json, MediaType.parse("application/json"));
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onClick(View view) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                        "Erro " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
 
-                if(inputEmail.getText().toString().isEmpty() || inputPasswd.getText().toString().isEmpty()){
-                    Toast.makeText(MainActivity.this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    User user = new User();
-                    user.setEmail(inputEmail.getText().toString());
-                    user.setPassword(inputPasswd.getText().toString());
-                    login(user);
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                if(response.code() == 200){
+                    String responseData = response.body().string();
+                    try{
+                        // Extrair o token JWT do JSON da resposta
+                        JSONObject jsonResponse = new JSONObject(responseData);
+                        String token = jsonResponse.getString("accessToken");
+
+                        // Salvar o token em SharedPreferences
+                        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("jwt_token", token);
+                        editor.apply();
+
+                        Log.d("Login", "Token salvo: " + token);
+
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                                "Login Realizado com Sucesso!", Toast.LENGTH_SHORT).show());
+
+                    }catch (JSONException e){
+                        e.printStackTrace();
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                                "Erro " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    }
+                }else{
+                    Log.e("Login", "Falha no login: " + response.message());
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                            "Falha no login: " + response.message(), Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
 
-    public void login(User user){
-
-        String url = "https://recoletaapi.onrender.com/api/auth/login";
-        JSONObject prmt = new JSONObject();
-
-        try{
-            prmt.put("email", user.getEmail());
-            prmt.put("password", user.getPassword());
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
-        StringEntity entity = new StringEntity(prmt.toString(), ContentType.APPLICATION_JSON);
-
-        client.post(MainActivity.this, url, entity, "application/json", new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                if(statusCode == 200){
-                    Toast.makeText(MainActivity.this, "Login Realizado com Sucesso!", Toast.LENGTH_SHORT).show();
-                    //criar o intent para a tela home
-                }
-            }
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(MainActivity.this, "Erro " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    // Função para recuperar o token JWT armazenado
+    public String getToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        return sharedPreferences.getString("jwt_token", null);
     }
 }
