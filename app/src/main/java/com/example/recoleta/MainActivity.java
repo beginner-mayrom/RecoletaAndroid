@@ -24,9 +24,9 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextInputEditText inputEmail;
-    EditText inputPasswd;
-    Button loginButton;
+    private TextInputEditText inputEmail;
+    private EditText inputPasswd;
+    private Button loginButton;
 
     private static final String url = "https://recoletaapi.onrender.com/api/auth/login";
 
@@ -56,7 +56,14 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(view -> {
             String email = inputEmail.getText().toString();
             String password = inputPasswd.getText().toString();
-            login(email, password);
+
+            if(email.isEmpty() || password.isEmpty()){
+                Toast.makeText(MainActivity.this,
+                        "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                login(email, password);
+            }
         });
     }
 
