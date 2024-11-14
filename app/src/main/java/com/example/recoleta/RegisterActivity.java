@@ -1,5 +1,6 @@
 package com.example.recoleta;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -68,7 +69,8 @@ public class RegisterActivity extends AppCompatActivity {
                 String lastName = inputLastName.getText().toString();
                 String password = inputPasswd.getText().toString();
 
-                if(email.isEmpty() || name.isEmpty() || lastName.isEmpty() || password.isEmpty()){
+                if(email.isEmpty() || name.isEmpty() || lastName.isEmpty() ||
+                        password.isEmpty() || selectedRadioButton.isEmpty()){
                     Toast.makeText(RegisterActivity.this,
                             "Preencha todos os campos", Toast.LENGTH_SHORT).show();
                 }
@@ -110,6 +112,9 @@ public class RegisterActivity extends AppCompatActivity {
                 if(response.code() == 200) {
                     runOnUiThread(() -> Toast.makeText(RegisterActivity.this,
                             "Cadastro Realizado com Sucesso!", Toast.LENGTH_SHORT).show());
+
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    startActivity(intent);
 
                 }
                 else{
