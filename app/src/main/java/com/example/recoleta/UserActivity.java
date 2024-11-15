@@ -141,6 +141,13 @@ public class UserActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(UserActivity.this,
                             "Cadastro Atualizado com Sucesso!", Toast.LENGTH_SHORT).show());
                 }
+                else if (response.code() == 403) {
+                    runOnUiThread(() -> Toast.makeText(UserActivity.this,
+                            "Por favor, Realize o Login Novamente!", Toast.LENGTH_SHORT).show());
+
+                    Intent intent = new Intent(UserActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
                 else{
                     runOnUiThread(() -> Toast.makeText(UserActivity.this,
                             "Falha ao Atualizar o Cadastro: "
@@ -176,16 +183,19 @@ public class UserActivity extends AppCompatActivity {
                     Intent intent = new Intent(UserActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
+                else if (response.code() == 403) {
+                    runOnUiThread(() -> Toast.makeText(UserActivity.this,
+                            "Por favor, Realize o Login Novamente!", Toast.LENGTH_SHORT).show());
+
+                    Intent intent = new Intent(UserActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
                 else{
                     runOnUiThread(() -> Toast.makeText(UserActivity.this,
                             "Falha ao Atualizar o Cadastro: "
                                     + response.message(), Toast.LENGTH_SHORT).show());
                 }
-
             }
         });
-
     }
-
-
 }
