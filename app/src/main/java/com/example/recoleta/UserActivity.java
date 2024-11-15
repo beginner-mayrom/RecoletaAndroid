@@ -39,7 +39,6 @@ public class UserActivity extends AppCompatActivity {
     private String token;
     private String selectedRadioButton;
     private String url;
-    private ImageView returnImg;
     private TextInputEditText nameText, lastNameText;
     private OkHttpClient client;
 
@@ -47,6 +46,16 @@ public class UserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+
+        ImageView returnImg = (ImageView) findViewById(R.id.imageView2);
+
+        returnImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //recuperando os dados
         UserDataSession userData = new UserDataSession(this);
