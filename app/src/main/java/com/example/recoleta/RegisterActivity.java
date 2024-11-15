@@ -27,8 +27,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private TextInputEditText inputEmail, inputName, inputLastName;
     private EditText inputPasswd;
-    private Button registerButton;
-    private RadioGroup group;
 
     private String selectedRadioButton = "";
 
@@ -45,8 +43,8 @@ public class RegisterActivity extends AppCompatActivity {
         inputName = (TextInputEditText) findViewById(R.id.textInputNome);
         inputLastName = (TextInputEditText) findViewById(R.id.textInputSobrenome);
         inputPasswd = (EditText) findViewById(R.id.editTextSenha);
-        registerButton = (Button) findViewById(R.id.buttonCadastrar);
-        group = (RadioGroup) findViewById(R.id.radioGroup);
+        Button registerButton = (Button) findViewById(R.id.buttonCadastrar);
+        RadioGroup group = (RadioGroup) findViewById(R.id.radioGroup);
         client = new OkHttpClient();
 
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

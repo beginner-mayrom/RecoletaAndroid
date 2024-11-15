@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextInputEditText inputEmail;
     private EditText inputPasswd;
-    private Button loginButton;
 
     private static final String url = "https://recoletaapi.onrender.com/api/auth/login";
 
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         inputEmail = (TextInputEditText) findViewById(R.id.textInputEmail);
         inputPasswd = (EditText) findViewById(R.id.editTextSenha);
-        loginButton = (Button) findViewById(R.id.buttonEntrar);
+        Button loginButton = (Button) findViewById(R.id.buttonEntrar);
 
         client = new OkHttpClient();
 
