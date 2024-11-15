@@ -32,7 +32,5 @@ public class UserDataSession {
         return sharedPreferences.getBoolean("is_admin", false);
     }
 
-    public String getUserType() {
-        return sharedPreferences.getString("user_type", "null"); // Retorna "null" se não houver valor
-    }
+    public String getUserType() {return sharedPreferences.getString("user_type", null);}
 }

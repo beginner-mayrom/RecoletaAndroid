@@ -95,10 +95,14 @@ public class MainActivity extends AppCompatActivity {
                         String token = jsonResponse.getString("accessToken");
                         String id = jsonResponse.getString("_id");
                         String firstName = jsonResponse.getString("firstName");
-                        String lastName = jsonResponse.getString("lastName");
+
+                        // Retorna null se não houver valor
+                        String lastName = jsonResponse.has("lastName") ?
+                                jsonResponse.getString("lastName") : "";
+
                         Boolean admin = jsonResponse.getBoolean("isAdmin");
 
-                        // Verifica se o campo "userType" está presente
+                        // Retorna null se não houver valor
                         String userType = jsonResponse.has("userType") ?
                                 jsonResponse.getString("userType") : "null";
 
@@ -121,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if(admin){
                             // TODO: 12/11/2024 alterar o redirecionamento para a página do admin
-                            Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                             startActivity(intent);
                         }
                         else{

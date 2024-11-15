@@ -36,17 +36,11 @@ import okhttp3.Response;
 
 public class UserActivity extends AppCompatActivity {
 
-    //recuperando os dados
-    UserDataSession userData = new UserDataSession(this);
-    private final String id = userData.getUserId();
-    private final String token = userData.getJwtToken();
-
-    private String selectedRadioButton = "";
+    private String token;
+    private String selectedRadioButton;
+    private String url;
     private ImageView returnImg;
     private TextInputEditText nameText, lastNameText;
-
-    private final String url = "https://recoletaapi.onrender.com/api/users/" + id;
-
     private OkHttpClient client;
 
     @Override
@@ -54,7 +48,14 @@ public class UserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
+        //recuperando os dados
+        UserDataSession userData = new UserDataSession(this);
+        String id = userData.getUserId();
+        token = userData.getJwtToken();
+        selectedRadioButton = userData.getUserType();
+
         client = new OkHttpClient();
+        url = "https://recoletaapi.onrender.com/api/users/" + id;
 
         RadioGroup group = (RadioGroup) findViewById(R.id.radioGroup2);
         RadioButton collectRB = (RadioButton) findViewById(R.id.radioButton4);
