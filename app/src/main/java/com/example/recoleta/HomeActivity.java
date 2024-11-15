@@ -16,8 +16,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private ImageView profileImgView, altImgView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +24,8 @@ public class HomeActivity extends AppCompatActivity {
         //recuperando os dados
         UserDataSession userData = new UserDataSession(this);
 
-        profileImgView = (ImageView) findViewById(R.id.imageView2);
-        altImgView = (ImageView) findViewById(R.id.imageView3);
+        ImageView profileImgView = (ImageView) findViewById(R.id.imageView2);
+        ImageView altImgView = (ImageView) findViewById(R.id.imageView3);
 
         profileImgView.setOnClickListener(new View.OnClickListener() {
             @Override
