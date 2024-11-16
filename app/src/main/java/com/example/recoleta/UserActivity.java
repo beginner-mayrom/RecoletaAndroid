@@ -3,27 +3,19 @@ package com.example.recoleta;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.Call;
@@ -36,31 +28,40 @@ import okhttp3.Response;
 
 public class UserActivity extends AppCompatActivity {
 
-    private String token, id, name, lastName;
+    private String token;
+    private Boolean isAdmin1, isAdmin2;
     private String selectedRadioButton;
     private String url;
     private TextInputEditText nameText, lastNameText;
     private OkHttpClient client;
-    private UserDataSession userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        String adminToken = getIntent().getStringExtra("admin_token");
+        Intent intent = getIntent();
+        UserDataSession userData = new UserDataSession(this);
+        isAdmin1 = userData.isAdmin();
+        isAdmin2 = intent.getBooleanExtra("is_admin", false);
 
-        if(adminToken != null){
-            // TODO: 15/11/2024 trazer os dados de userAdapter
-            token = adminToken;
+        String id;
+        String firstName;
+        String lastName;
+
+        if(isAdmin1){
+            token = userData.getJwtToken();
+
+            id = intent.getStringExtra("user_id");
+            firstName = intent.getStringExtra("first_name");
+            lastName = intent.getStringExtra("last_name");
+            selectedRadioButton = intent.getStringExtra("user_type");
         }
         else{
-            //recuperando os dados do usuário logado
-            userData = new UserDataSession(this);
             id = userData.getUserId();
             token = userData.getJwtToken();
             selectedRadioButton = userData.getUserType();
-            name = userData.getFirstName();
+            firstName = userData.getFirstName();
             lastName = userData.getLastName();
         }
 
@@ -74,15 +75,14 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(adminToken != null){
-                    // todo retornar para a página do admin
-                    Intent intent = new Intent(UserActivity.this, MainActivity.class);
-                    startActivity(intent);
+                Intent intent;
+                if(isAdmin1){
+                    intent = new Intent(UserActivity.this, AdminActivity.class);
                 }
                 else{
-                    Intent intent = new Intent(UserActivity.this, HomeActivity.class);
-                    startActivity(intent);
+                    intent = new Intent(UserActivity.this, HomeActivity.class);
                 }
+                startActivity(intent);
             }
         });
 
@@ -94,7 +94,6 @@ public class UserActivity extends AppCompatActivity {
         Button updateButton = (Button) findViewById(R.id.buttonCadastrar3);
         Button deleteButton = (Button) findViewById(R.id.buttonExcluir);
 
-//        selectedRadioButton = userData.getUserType();
 
         if(Objects.equals(selectedRadioButton, "Coletor")){
             collectRB.setChecked(true);
@@ -102,7 +101,7 @@ public class UserActivity extends AppCompatActivity {
             produceRB.setChecked(true);
         }
 
-        nameText.setText(name);
+        nameText.setText(firstName);
         lastNameText.setText(lastName);
 
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -120,15 +119,15 @@ public class UserActivity extends AppCompatActivity {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String name = nameText.getText().toString();
+                String firstName = nameText.getText().toString();
                 String lastName = lastNameText.getText().toString();
 
-                if(name.isEmpty() || lastName.isEmpty()){
+                if(firstName.isEmpty() || lastName.isEmpty()){
                     Toast.makeText(UserActivity.this,
                             "Preencha todos os campos", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    update(name, lastName, selectedRadioButton);
+                    update(firstName, lastName, selectedRadioButton);
                 }
             }
         });
@@ -141,10 +140,10 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    private void update(String name, String lastName, String selectedRadioButton) {
+    private void update(String firstName, String lastName, String selectedRadioButton) {
 
         String json = "{ " +
-                "\"firstName\": \"" + name + "\", " +
+                "\"firstName\": \"" + firstName + "\", " +
                 "\"lastName\": \"" + lastName + "\", " +
                 "\"userType\": \"" + selectedRadioButton + "\"" +
                 "}";
@@ -170,6 +169,15 @@ public class UserActivity extends AppCompatActivity {
                 if(response.code() == 200){
                     runOnUiThread(() -> Toast.makeText(UserActivity.this,
                             "Cadastro Atualizado com Sucesso!", Toast.LENGTH_SHORT).show());
+
+                    // Atualizar os dados em SharedPreferences
+                    SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("firstName", firstName);
+                    editor.putString("lastName", lastName);
+                    editor.putString("user_type", selectedRadioButton);
+                    editor.apply();
+
                 }
                 else if (response.code() == 403) {
                     runOnUiThread(() -> Toast.makeText(UserActivity.this,
@@ -188,6 +196,13 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void delete(){
+
+        if(isAdmin2){
+
+            runOnUiThread(() -> Toast.makeText(UserActivity.this,
+                    "O usuário administrador não pode ser deletado.", Toast.LENGTH_SHORT).show());
+            return;
+        }
 
         Request request = new Request.Builder()
                 .url(url)
@@ -210,8 +225,11 @@ public class UserActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(UserActivity.this,
                             "Conta Deletada com Sucesso!", Toast.LENGTH_SHORT).show());
 
-                    Intent intent = new Intent(UserActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    if(!isAdmin1){
+                        Intent intent = new Intent(UserActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+
                 }
                 else if (response.code() == 403) {
                     runOnUiThread(() -> Toast.makeText(UserActivity.this,
@@ -222,7 +240,7 @@ public class UserActivity extends AppCompatActivity {
                 }
                 else{
                     runOnUiThread(() -> Toast.makeText(UserActivity.this,
-                            "Falha ao Atualizar o Cadastro: "
+                            "Falha ao Deletar o Cadastro: "
                                     + response.message(), Toast.LENGTH_SHORT).show());
                 }
             }

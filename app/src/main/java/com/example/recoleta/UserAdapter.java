@@ -4,14 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,17 +24,17 @@ public class UserAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return users != null ? users.size() : 0;
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
+    public Object getItem(int position) {
+        return users.get(position);
     }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -66,10 +62,11 @@ public class UserAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, UserActivity.class);
-                intent.putExtra("user_id", user.getId());// Passar dados do usuário
+                intent.putExtra("user_id", user.get_id());// Passar dados do usuário
                 intent.putExtra("first_name", user.getFirstName());
                 intent.putExtra("last_name", user.getLastName());
                 intent.putExtra("user_type", user.getUserType());
+                intent.putExtra("is_admin", user.isAdmin());
                 context.startActivity(intent);
             }
         });

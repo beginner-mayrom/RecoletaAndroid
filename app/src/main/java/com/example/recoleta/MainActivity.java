@@ -124,8 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         if(admin){
-                            // TODO: 12/11/2024 alterar o redirecionamento para a página do admin
-                            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
                             startActivity(intent);
                         }
                         else{
