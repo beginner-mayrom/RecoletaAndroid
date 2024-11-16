@@ -33,6 +33,7 @@ android {
 
 dependencies {
 
+    implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation ("com.loopj.android:android-async-http:1.4.9")

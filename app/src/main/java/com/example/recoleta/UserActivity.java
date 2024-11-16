@@ -36,35 +36,55 @@ import okhttp3.Response;
 
 public class UserActivity extends AppCompatActivity {
 
-    private String token;
+    private String token, id, name, lastName;
     private String selectedRadioButton;
     private String url;
     private TextInputEditText nameText, lastNameText;
     private OkHttpClient client;
+    private UserDataSession userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
+        String adminToken = getIntent().getStringExtra("admin_token");
+
+        if(adminToken != null){
+            // TODO: 15/11/2024 trazer os dados de userAdapter
+            token = adminToken;
+        }
+        else{
+            //recuperando os dados do usuário logado
+            userData = new UserDataSession(this);
+            id = userData.getUserId();
+            token = userData.getJwtToken();
+            selectedRadioButton = userData.getUserType();
+            name = userData.getFirstName();
+            lastName = userData.getLastName();
+        }
+
+
+        client = new OkHttpClient();
+        url = "https://recoletaapi.onrender.com/api/users/" + id;
+
         ImageView returnImg = (ImageView) findViewById(R.id.imageView2);
 
         returnImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(UserActivity.this, HomeActivity.class);
-                startActivity(intent);
+
+                if(adminToken != null){
+                    // todo retornar para a página do admin
+                    Intent intent = new Intent(UserActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(UserActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                }
             }
         });
-
-        //recuperando os dados
-        UserDataSession userData = new UserDataSession(this);
-        String id = userData.getUserId();
-        token = userData.getJwtToken();
-        selectedRadioButton = userData.getUserType();
-
-        client = new OkHttpClient();
-        url = "https://recoletaapi.onrender.com/api/users/" + id;
 
         RadioGroup group = (RadioGroup) findViewById(R.id.radioGroup2);
         RadioButton collectRB = (RadioButton) findViewById(R.id.radioButton4);
@@ -74,7 +94,7 @@ public class UserActivity extends AppCompatActivity {
         Button updateButton = (Button) findViewById(R.id.buttonCadastrar3);
         Button deleteButton = (Button) findViewById(R.id.buttonExcluir);
 
-        selectedRadioButton = userData.getUserType();
+//        selectedRadioButton = userData.getUserType();
 
         if(Objects.equals(selectedRadioButton, "Coletor")){
             collectRB.setChecked(true);
@@ -82,8 +102,8 @@ public class UserActivity extends AppCompatActivity {
             produceRB.setChecked(true);
         }
 
-        nameText.setText(userData.getFirstName());
-        lastNameText.setText(userData.getLastName());
+        nameText.setText(name);
+        lastNameText.setText(lastName);
 
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
