@@ -38,11 +38,11 @@
             <ListView
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
-                android:layout_height="600dp"
+                android:layout_height="500dp"
                 android:layout_marginTop="25dp" />
 
             <Button
-                android:id="@+id/buttonExcluir"
+                android:id="@+id/buttonSair"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"

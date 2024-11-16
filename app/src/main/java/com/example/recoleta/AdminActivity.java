@@ -2,6 +2,8 @@ package com.example.recoleta;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,6 +39,16 @@ public class AdminActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
+
+        Button logoutBtn = findViewById(R.id.buttonSair);
+
+        logoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AdminActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //recuperando os dados
         UserDataSession userData = new UserDataSession(this);
@@ -78,10 +90,6 @@ public class AdminActivity extends AppCompatActivity {
                     Type listType = new TypeToken<List<User>>() {
                     }.getType();
                     List<User> users = gson.fromJson(jsonResponse, listType);
-
-                    Intent intent = new Intent(AdminActivity.this, UserActivity.class);
-                    intent.putExtra("admin_token", token);
-                    startActivity(intent);
 
                     // Atualizar UI na thread principal
                     runOnUiThread(() -> {
