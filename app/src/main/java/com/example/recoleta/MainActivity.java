@@ -137,7 +137,12 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(() -> Toast.makeText(MainActivity.this,
                                 "Erro " + e.getMessage(), Toast.LENGTH_SHORT).show());
                     }
-                }else{
+                }
+                else if (response.code() == 401) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this,
+                            "Email ou Senha incorretos!", Toast.LENGTH_SHORT).show());
+                }
+                else{
                     Log.e("Login", "Falha no login: " + response.message());
                     runOnUiThread(() -> Toast.makeText(MainActivity.this,
                             "Falha no login: " + response.message(), Toast.LENGTH_SHORT).show());
