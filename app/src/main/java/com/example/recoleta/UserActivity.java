@@ -152,7 +152,7 @@ public class UserActivity extends AppCompatActivity {
         Request request = new Request.Builder()
                 .url(url)
                 .put(body)
-                .addHeader("token", "Bearer " + token)
+                .addHeader("authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -207,7 +207,7 @@ public class UserActivity extends AppCompatActivity {
         Request request = new Request.Builder()
                 .url(url)
                 .delete()
-                .addHeader("token", "Bearer " + token)
+                .addHeader("authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

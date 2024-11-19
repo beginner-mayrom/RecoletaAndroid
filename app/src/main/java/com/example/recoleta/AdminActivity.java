@@ -67,7 +67,7 @@ public class AdminActivity extends AppCompatActivity {
         Request request = new Request.Builder()
                 .url(url)
                 .get()
-                .addHeader("token", "Bearer " + token)
+                .addHeader("authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
